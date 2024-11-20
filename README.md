@@ -1,64 +1,65 @@
+
 # API de Pagamento - Tech Challenge
 
-<p align="center">
-  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/gabriel-gsilva/api-pagamento-tech-challenge?color=%2304D361">
-
-  <img alt="Repository size" src="https://img.shields.io/github/repo-size/gabriel-gsilva/api-pagamento-tech-challenge">
-  
-  <a href="https://github.com/gabriel-gsilva/api-pagamento-tech-challenge/commits/master">
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/gabriel-gsilva/api-pagamento-tech-challenge">
-  </a>
-    
-   <img alt="License" src="https://img.shields.io/badge/license-MIT-brightgreen">
-   <a href="https://github.com/gabriel-gsilva/api-pagamento-tech-challenge/stargazers">
-    <img alt="Stargazers" src="https://img.shields.io/github/stars/gabriel-gsilva/api-pagamento-tech-challenge?style=social">
-  </a>
-</p>
-
-<h4 align="center"> 
-	🚧  API de Pagamento 💳 Em construção...  🚧
-</h4>
+#### 🚧  API de Pagamento 💳 Em construção... 🚧
 
 ## 📋 Índice
 
-- [Sobre o Projeto](#-sobre-o-projeto)
-- [Funcionalidades](#-funcionalidades)
-- [Layout](#-layout)
-- [Como Executar o Projeto](#-como-executar-o-projeto)
-- [Tecnologias](#-tecnologias)
-- [Contribuidores](#-contribuidores)
-- [Autor](#-autor)
-- [Licença](#-licença)
+- [API de Pagamento - Tech Challenge](#api-de-pagamento---tech-challenge)
+      - [🚧  API de Pagamento 💳 Em construção... 🚧](#--api-de-pagamento--em-construção-)
+  - [📋 Índice](#-índice)
+  - [💻 Sobre o Projeto](#-sobre-o-projeto)
+  - [⚙️ Funcionalidades](#️-funcionalidades)
+  - [🏗 Arquitetura](#-arquitetura)
+  - [🚀 Como Executar o Projeto](#-como-executar-o-projeto)
+    - [Pré-requisitos](#pré-requisitos)
+    - [🎲 Configurando e Executando](#-configurando-e-executando)
+  - [🧪 Testando a API](#-testando-a-api)
+    - [Criar Preferência de Pagamento](#criar-preferência-de-pagamento)
+    - [Processar Retorno de Pagamento](#processar-retorno-de-pagamento)
+  - [🛠 Tecnologias](#-tecnologias)
+  - [👥 Contribuidores](#-contribuidores)
+  - [🦸 Autor](#-autor)
+  - [📝 Licença](#-licença)
 
 ## 💻 Sobre o Projeto
 
-💳 API de Pagamento - É uma solução desenvolvida como parte de um desafio técnico para processar pagamentos de forma segura e eficiente.
+💳 **API de Pagamento** - É uma solução serverless desenvolvida como parte de um desafio técnico para processar pagamentos de forma segura e eficiente, utilizando a integração com o Mercado Pago.
 
-Projeto desenvolvido durante o **Tech Challenge** oferecido pela [Sua Empresa/Instituição].
+Este projeto foi desenvolvido durante o **Tech Challenge** oferecido pela [FIAP] como parte do curso de Arquitetura de Software.
 
 ## ⚙️ Funcionalidades
 
-- [x] Processamento de pagamentos
-- [x] Consulta de status de transações
-- [ ] Estorno de transações
-- [ ] Geração de relatórios
+- [x] Criação de preferências de pagamento
+- [x] Processamento de retornos de pagamento
+- [x] Armazenamento de informações de transações no DynamoDB
+- [x] Integração com o Mercado Pago para processamento de pagamentos
+- [ ] Consulta de status de transações (em desenvolvimento)
+- [ ] Estorno de transações (planejado)
+- [ ] Geração de relatórios (planejado)
 
-## 🎨 Layout
+## 🏗 Arquitetura
 
-O layout da aplicação está disponível no Figma:
+O projeto utiliza uma arquitetura serverless na AWS, composta por:
 
-<a href="https://www.figma.com/file/1SxgOMojOB2zYT0Mdk28lB/API-de-Pagamento?node-id=...">
-  <img alt="Made by gabriel-gsilva" src="https://img.shields.io/badge/Acessar%20Layout%20-Figma-%2304D361">
-</a>
+- **API Gateway:** Para expor os endpoints da API
+- **Lambda Functions:** Para processar as requisições
+- **DynamoDB:** Para armazenar informações das transações
+- **IAM:** Para gerenciar permissões e acessos
+
+A infraestrutura é gerenciada usando Terraform, permitindo uma implantação consistente e versionada.
 
 ## 🚀 Como Executar o Projeto
 
 ### Pré-requisitos
 
 Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas:
-[Git](https://git-scm.com), [Python](https://www.python.org/downloads/), [Terraform](https://www.terraform.io/downloads.html), [AWS CLI](https://aws.amazon.com/cli/).
+- [Git](https://git-scm.com)
+- [Python](https://www.python.org/downloads/) (versão 3.8 ou superior)
+- [Terraform](https://www.terraform.io/downloads.html) (versão 1.0 ou superior)
+- [AWS CLI](https://aws.amazon.com/cli/) (configurado com suas credenciais)
 
-#### 🎲 Rodando o Backend (servidor)
+### 🎲 Configurando e Executando
 
 ```bash
 # Clone este repositório
@@ -67,10 +68,101 @@ $ git clone git@github.com:gabriel-gsilva/api-pagamento-tech-challenge.git
 # Acesse a pasta do projeto no terminal/cmd
 $ cd api-pagamento-tech-challenge
 
-# Instale as dependências
+# Instale as dependências do Python
 $ pip install -r requirements.txt
 
-# Execute a aplicação em modo de desenvolvimento
-$ python app.py
+# Acesse a pasta do Terraform
+$ cd terraform
 
-# O servidor inciará na porta:5000 - acesse http://localhost:5000 
+# Inicialize o Terraform
+$ terraform init
+
+# Verifique o plano de execução do Terraform
+$ terraform plan
+
+# Aplique as mudanças na infraestrutura
+$ terraform apply
+
+# Confirme a aplicação digitando 'yes' quando solicitado
+```
+
+Após a execução bem-sucedida do Terraform, os endpoints da API estarão disponíveis para uso.
+
+## 🧪 Testando a API
+
+Após a implantação, você pode testar os endpoints da API usando curl ou ferramentas como Postman. Aqui estão alguns exemplos:
+
+### Criar Preferência de Pagamento
+
+Endpoint: `POST /criar_preferencia`
+
+Exemplo de payload:
+
+```json
+{
+  "items": [
+    {
+      "title": "Produto de Teste",
+      "quantity": 1,
+      "currency_id": "BRL",
+      "unit_price": 100.00
+    }
+  ]
+}
+```
+
+Comando curl:
+
+```bash
+curl -X POST https://seu-api-gateway-url/dev/criar_preferencia \
+     -H "Content-Type: application/json" \
+     -d '{"items":[{"title":"Produto de Teste","quantity":1,"currency_id":"BRL","unit_price":100.00}]}'
+```
+
+### Processar Retorno de Pagamento
+
+Endpoint: `GET /retorno`
+
+Este endpoint é chamado automaticamente pelo Mercado Pago após o processamento do pagamento. Para testes, você pode simular uma chamada usando:
+
+```bash
+curl -X GET "https://seu-api-gateway-url/dev/retorno?collection_status=approved&external_reference=seu-id-de-referencia"
+```
+
+## 🛠 Tecnologias
+
+As seguintes ferramentas foram usadas na construção do projeto:
+
+- [Python](https://www.python.org/)
+- [AWS Lambda](https://aws.amazon.com/lambda/)
+- [Amazon API Gateway](https://aws.amazon.com/api-gateway/)
+- [Amazon DynamoDB](https://aws.amazon.com/dynamodb/)
+- [Terraform](https://www.terraform.io/)
+- [Mercado Pago SDK](https://www.mercadopago.com.br/developers/pt/guides/sdks)
+
+## 👥 Contribuidores
+
+Agradecemos às seguintes pessoas que contribuíram para este projeto:
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/gabriel-gsilva"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/seu-id?v=4" width="100px;" alt=""/><br /><sub><b>Gabriel Silva</b></sub></a><br /><a href="https://github.com/gabriel-gsilva" title="Desenvolvedor">👨‍💻</a></td>
+  </tr>
+</table>
+
+## 🦸 Autor
+
+<a href="https://github.com/gabriel-gsilva">
+ <img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/seu-id?v=4" width="100px;" alt=""/>
+ <br />
+ <sub><b>Gabriel Silva</b></sub></a>
+ <br />
+
+[![LinkedIn Badge](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/seu-linkedin/)](https://www.linkedin.com/in/seu-linkedin/)
+[![Gmail Badge](https://img.shields.io/badge/-Gmail-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:seu-email@gmail.com)](mailto:seu-email@gmail.com)
+
+## 📝 Licença
+
+Este projeto está sob a licença [MIT](./LICENSE).
+
+Feito com ❤️ por Gabriel Silva 👋🏽 [Entre em contato!](https://www.linkedin.com/in/seu-linkedin/)

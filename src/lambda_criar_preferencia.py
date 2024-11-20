@@ -2,13 +2,13 @@ import json
 import uuid
 import boto3
 import mercadopago
+import os
 from botocore.exceptions import ClientError
 from decimal import Decimal
-import os
 
 # Inicialização dos clientes
 sdk = mercadopago.SDK(os.environ['MERCADOPAGO_ACCESS_TOKEN'])
-dynamodb = boto3.resource('dynamodb', region_name='sa-east-1')
+dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
 
 def float_to_decimal(obj):
@@ -23,34 +23,35 @@ def float_to_decimal(obj):
 def salvar_preferencias_dynamodb(preferencia, sandbox_init_point):
     try:
         id_preferencia = str(uuid.uuid4())
-        with table.batch_writer(overwrite_by_pkeys=['id_preferencia']) as batch:
+        with table.batch_writer() as batch:
             for item in preferencia['items']:
                 item_dynamodb = {
                     'id_preferencia': id_preferencia,
-                    'id_mercadopago': preferencia['id'],
                     'produto': item['title'],
+                    'id_mercadopago': preferencia['id'],
                     'quantidade': item['quantity'],
                     'tipo_moeda': item['currency_id'],
                     'valor_unitario': Decimal(str(item['unit_price'])),
-                    'sandbox_init_point': sandbox_init_point
+                    'sandbox_init_point': sandbox_init_point,
+                    'status_pagamento': 'pending'
                 }
                 item_dynamodb = float_to_decimal(item_dynamodb)
                 batch.put_item(Item=item_dynamodb)
-        print(f"Preferência salva no DynamoDB com ID: {id_preferencia}")
-        return True
+        return id_preferencia
     except ClientError as e:
-        print(f"Erro ao salvar no DynamoDB: {str(e)}")
-        return False
+        print(f"Erro detalhado ao salvar no DynamoDB: {str(e)}")
+        raise
 
-def criar_preferencia(items):
+def criar_preferencia(items, external_reference):
     preference_data = {
         "items": items,
         "back_urls": {
-            "success": "https://seu-dominio.com/compracerta",
-            "failure": "https://seu-dominio.com/compraerrada",
-            "pending": "https://seu-dominio.com/compraerrada",
+            "success": f"{os.environ['API_GATEWAY_URL']}/retorno",
+            "failure": f"{os.environ['API_GATEWAY_URL']}/retorno",
+            "pending": f"{os.environ['API_GATEWAY_URL']}/retorno",
         },
-        "auto_return": "all"
+        "auto_return": "approved",
+        "external_reference": external_reference
     }
 
     try:
@@ -65,9 +66,13 @@ def criar_preferencia(items):
         return None
 
 def lambda_handler(event, context):
+    print("Evento recebido:", json.dumps(event))
     try:
-        # Parse o corpo da requisição
-        body = json.loads(event['body'])
+        if 'body' in event:
+            body = json.loads(event['body'])
+        else:
+            body = event
+
         items = body.get('items', [])
 
         if not items:
@@ -76,7 +81,8 @@ def lambda_handler(event, context):
                 'body': json.dumps({"message": "Nenhum item fornecido"})
             }
 
-        preferencia = criar_preferencia(items)
+        external_reference = str(uuid.uuid4())
+        preferencia = criar_preferencia(items, external_reference)
         if not preferencia:
             return {
                 'statusCode': 500,
@@ -85,20 +91,24 @@ def lambda_handler(event, context):
 
         sandbox_init_point = preferencia.get('sandbox_init_point', 'Não disponível')
         
-        if not salvar_preferencias_dynamodb(preferencia, sandbox_init_point):
+        print("Preferência criada:", json.dumps(preferencia))
+        print("Tentando salvar no DynamoDB...")
+
+        id_preferencia = salvar_preferencias_dynamodb(preferencia, sandbox_init_point)
+        if not id_preferencia:
             return {
                 'statusCode': 500,
                 'body': json.dumps({"message": "Falha ao salvar preferências no DynamoDB"})
             }
 
-        print(f"URL do Mercado Pago: {sandbox_init_point}")
-        print("Execução bem-sucedida!")
+        print("Preferência salva com sucesso no DynamoDB")
 
         return {
             'statusCode': 200,
             'body': json.dumps({
                 "message": "Preferência criada e salva com sucesso",
-                "id_preferencia": preferencia['id'],
+                "id_preferencia": id_preferencia,
+                "external_reference": external_reference,
                 "itens": [
                     {
                         "titulo": item['title'],
@@ -110,14 +120,9 @@ def lambda_handler(event, context):
             })
         }
 
-    except json.JSONDecodeError:
-        return {
-            'statusCode': 400,
-            'body': json.dumps({"message": "Corpo da requisição inválido"})
-        }
     except Exception as e:
         print(f"Erro não tratado: {str(e)}")
         return {
             'statusCode': 500,
-            'body': json.dumps({"message": "Erro interno do servidor"})
+            'body': json.dumps({"message": f"Erro interno do servidor: {str(e)}"})
         }
