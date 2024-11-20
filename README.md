@@ -102,21 +102,25 @@ Exemplo de payload:
 {
   "items": [
     {
-      "title": "Produto de Teste",
+      "title": "X-Tudo",
       "quantity": 1,
       "currency_id": "BRL",
-      "unit_price": 100.00
+      "unit_price": 25.90
+    },
+    {
+      "title": "Refrigerante 350ml",
+      "quantity": 2,
+      "currency_id": "BRL",
+      "unit_price": 5.50
+    },
+    {
+      "title": "Batata Frita Média",
+      "quantity": 1,
+      "currency_id": "BRL",
+      "unit_price": 8.90
     }
   ]
 }
-```
-
-Comando curl:
-
-```bash
-curl -X POST https://seu-api-gateway-url/dev/criar_preferencia \
-     -H "Content-Type: application/json" \
-     -d '{"items":[{"title":"Produto de Teste","quantity":1,"currency_id":"BRL","unit_price":100.00}]}'
 ```
 
 ### Processar Retorno de Pagamento
