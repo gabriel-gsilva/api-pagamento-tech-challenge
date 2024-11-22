@@ -6,6 +6,8 @@ import os
 from botocore.exceptions import ClientError
 from decimal import Decimal
 
+# Defina a região da AWS
+os.environ['AWS_DEFAULT_REGION'] = 'us-east-1'
 # Inicialização dos clientes
 sdk = mercadopago.SDK(os.environ['MERCADOPAGO_ACCESS_TOKEN'])
 dynamodb = boto3.resource('dynamodb')
