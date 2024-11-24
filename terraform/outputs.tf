@@ -1,6 +1,6 @@
 output "dynamodb_table_name" {
   description = "Nome da tabela DynamoDB criada"
-  value       = aws_dynamodb_table.preferencias.name
+  value = module.dynamodb.table_name
 }
 
 output "lambda_criar_preferencia_function_name" {
@@ -66,4 +66,12 @@ output "iam_role_name" {
 output "iam_role_arn" {
   description = "ARN da IAM Role criada para as funções Lambda"
   value       = aws_iam_role.lambda_role.arn
+}
+
+output "lambda_function_criar_preferencia_arn" {
+   value       = aws_lambda_function.criar_preferencia.arn 
+}
+
+output "lambda_function_retorno_arn" {
+   value       = aws_lambda_function.retorno.arn 
 }
