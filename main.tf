@@ -2,7 +2,7 @@ provider "aws" {
   region = var.aws_region
 }
 
-# Criação DynamoDB
+# DynamoDB via repositorio
 module "dynamodb" {
   source = "git::https://github.com/gabriel-gsilva/dynamodb-pagamento-tech-challenge"
   dynamodb_table_name  = var.dynamodb_table_name
