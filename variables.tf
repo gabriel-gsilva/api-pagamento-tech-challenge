@@ -28,8 +28,6 @@ variable "lambda_function_name" {
   default     = "mercadopago"
 }
 
-
-
 variable "lambda_runtime" {
   description = "Runtime para as funções Lambda"
   type        = string
