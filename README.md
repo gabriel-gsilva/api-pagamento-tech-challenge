@@ -1,7 +1,7 @@
 
 # API de Pagamento - Tech Challenge
 
-#### 🚧  API de Pagamento 💳 Em construção... 🚧
+#### API de Pagamento 💳
 
 ## 📋 Índice 
 
@@ -34,9 +34,6 @@ Este projeto foi desenvolvido durante o **Tech Challenge** oferecido pela [FIAP]
 - [x] Processamento de retornos de pagamento
 - [x] Armazenamento de informações de transações no DynamoDB
 - [x] Integração com o Mercado Pago para processamento de pagamentos
-- [ ] Consulta de status de transações (em desenvolvimento)
-- [ ] Estorno de transações (planejado)
-- [ ] Geração de relatórios (planejado)
 
 ## 🏗 Arquitetura
 
