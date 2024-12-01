@@ -3,14 +3,14 @@ output "lambda_criar_preferencia_function_name" {
   value       = aws_lambda_function.criar_preferencia.function_name
 }
 
-output "lambda_criar_preferencia_invoke_arn" {
-  description = "ARN de invocação da função Lambda para criar preferência"
-  value       = aws_lambda_function.criar_preferencia.invoke_arn
-}
-
 output "lambda_retorno_function_name" {
   description = "Nome da função Lambda para processar retorno"
   value       = aws_lambda_function.retorno.function_name
+}
+
+output "lambda_criar_preferencia_invoke_arn" {
+  description = "ARN de invocação da função Lambda para criar preferência"
+  value       = aws_lambda_function.criar_preferencia.invoke_arn
 }
 
 output "lambda_retorno_invoke_arn" {
