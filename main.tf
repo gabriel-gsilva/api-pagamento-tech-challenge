@@ -5,7 +5,6 @@ provider "aws" {
 # IAM Role para as funções Lambda
 resource "aws_iam_role" "lambda_role" {
   name_prefix = "lambda_mercadopago_role_"
-  
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

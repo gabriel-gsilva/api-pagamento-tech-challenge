@@ -4,16 +4,16 @@ variable "aws_region" {
   default     = "sa-east-1"
 }
 
-variable "dynamodb_table_name" {
-  description = "Nome da tabela DynamoDB"
-  type        = string
-  default     = "MercadoPagoPreferencias"
-}
-
 variable "aws_account_id" {
   description = "ID da conta AWS"
   type        = string
   default     = "180294215177"
+}
+
+variable "dynamodb_table_name" {
+  description = "Nome da tabela DynamoDB"
+  type        = string
+  default     = "MercadoPagoPreferencias"
 }
 
 variable "environment" {
