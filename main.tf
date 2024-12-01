@@ -2,12 +2,10 @@ provider "aws" {
   region = var.aws_region
 }
 
-# DynamoDB via repositorio
+# Dynamodb via repositorio segregado
 module "dynamodb" {
   source = "git::https://github.com/gabriel-gsilva/dynamodb-pagamento-tech-challenge"
-  dynamodb_table_name  = var.dynamodb_table_name
-  dynamodb_billing_mode = var.dynamodb_billing_mode
-  tags                 = var.tags
+  tags   = var.tags
 }
 
 # IAM Role para as funções Lambda
