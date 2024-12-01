@@ -1,7 +1,7 @@
 
 # API de Pagamento - Tech Challenge
 
-#### 🚧  API de Pagamento 💳 Em construção... 🚧
+#### 🚧  API de Pagamento 💳 🚧
 
 ## 📋 Índice 
 
