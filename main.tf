@@ -146,14 +146,6 @@ resource "aws_api_gateway_resource" "retorno" {
   path_part   = "retorno"
 }
 
-# Método GET para retorno
-resource "aws_api_gateway_method" "get_retorno" {
-  rest_api_id   = aws_api_gateway_rest_api.mercadopago_api.id
-  resource_id   = aws_api_gateway_resource.retorno.id
-  http_method   = "GET"
-  authorization = "NONE"
-}
-
 # Integração do método GET com a função Lambda de retorno
 resource "aws_api_gateway_integration" "lambda_retorno" {
   rest_api_id = aws_api_gateway_rest_api.mercadopago_api.id
@@ -163,6 +155,14 @@ resource "aws_api_gateway_integration" "lambda_retorno" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.retorno.invoke_arn
+}
+
+# Método GET para retorno
+resource "aws_api_gateway_method" "get_retorno" {
+  rest_api_id   = aws_api_gateway_rest_api.mercadopago_api.id
+  resource_id   = aws_api_gateway_resource.retorno.id
+  http_method   = "GET"
+  authorization = "NONE"
 }
 
 # IAM Role para CloudWatch Logs do API Gateway

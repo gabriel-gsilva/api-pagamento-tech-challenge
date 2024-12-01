@@ -22,16 +22,16 @@ variable "environment" {
   default     = "dev"
 }
 
-variable "lambda_function_name" {
-  description = "Prefixo para o nome das funções Lambda"
-  type        = string
-  default     = "mercadopago"
-}
-
 variable "lambda_runtime" {
   description = "Runtime para as funções Lambda"
   type        = string
   default     = "python3.8"
+}
+
+variable "lambda_function_name" {
+  description = "Prefixo para o nome das funções Lambda"
+  type        = string
+  default     = "mercadopago"
 }
 
 variable "api_gateway_name" {
