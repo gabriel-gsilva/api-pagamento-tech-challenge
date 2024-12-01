@@ -64,7 +64,7 @@ resource "aws_iam_role_policy" "lambda_policy" {
 
 # Lambda function para criar preferência
 resource "aws_lambda_function" "criar_preferencia" {
-  filename         = "/src/lambda_criar_preferencia.zip"
+  filename         = "./src/lambda_criar_preferencia.zip"
   function_name    = "${var.lambda_function_name}_criar_preferencia"
   
   role             = aws_iam_role.lambda_role.arn
@@ -74,7 +74,7 @@ resource "aws_lambda_function" "criar_preferencia" {
   memory_size      = var.lambda_memory_size
   timeout          = var.lambda_timeout
   
-  source_code_hash = filebase64sha256("/src/lambda_criar_preferencia.zip")
+  source_code_hash = filebase64sha256("./src/lambda_criar_preferencia.zip")
   
   environment {
     variables = {
@@ -89,7 +89,7 @@ resource "aws_lambda_function" "criar_preferencia" {
 
 # Lambda function para retorno
 resource "aws_lambda_function" "retorno" {
-  filename         = "/src/lambda_retorno.zip"
+  filename         = "./src/lambda_retorno.zip"
   function_name    = "${var.lambda_function_name}_retorno"
 
   role             = aws_iam_role.lambda_role.arn
@@ -99,7 +99,7 @@ resource "aws_lambda_function" "retorno" {
   memory_size      = var.lambda_memory_size
   timeout          = var.lambda_timeout
   
-  source_code_hash = filebase64sha256("/src/lambda_retorno.zip")
+  source_code_hash = filebase64sha256("./src/lambda_retorno.zip")
   
   environment {
     variables = {
