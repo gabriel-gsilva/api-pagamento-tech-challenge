@@ -98,7 +98,7 @@ resource "aws_lambda_function" "retorno" {
   
   environment {
     variables = {
-      DYNAMODB_TABLE     = module.dynamodb.table_name
+      DYNAMODB_TABLE     = var.dynamodb_table_name
       REDIRECT_URL       = var.redirect_url
     }
   }
