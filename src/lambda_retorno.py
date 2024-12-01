@@ -11,30 +11,28 @@ logger.setLevel(logging.INFO)
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
 
-def atualizar_status_pagamento(id_preferencia, status, max_retries=3):
+def atualizar_status_pagamento(external_reference, status, max_retries=3):
     for attempt in range(max_retries):
         try:
-            # Primeiro, consulte o item para obter todos os produtos associados
             response = table.query(
-                KeyConditionExpression=Key('id_preferencia').eq(id_preferencia)
+                KeyConditionExpression=Key('external_reference').eq(external_reference)
             )
             
             if not response['Items']:
-                logger.error(f"Nenhum item encontrado para id_preferencia: {id_preferencia}")
+                logger.error(f"Nenhum item encontrado para external_reference: {external_reference}")
                 return False
 
-            # Atualize o status para todos os itens com o mesmo id_preferencia
             for item in response['Items']:
                 table.update_item(
                     Key={
-                        'id_preferencia': id_preferencia,
+                        'external_reference': external_reference,
                         'produto': item['produto']
                     },
                     UpdateExpression="set status_pagamento = :s",
                     ExpressionAttributeValues={':s': status},
                     ReturnValues="UPDATED_NEW"
                 )
-            logger.info(f"Status atualizado para {id_preferencia}: {status}")
+            logger.info(f"Status atualizado para {external_reference}: {status}")
             return True
         except ClientError as e:
             if attempt == max_retries - 1:

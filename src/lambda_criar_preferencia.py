@@ -6,7 +6,6 @@ import os
 from botocore.exceptions import ClientError
 from decimal import Decimal
 
-# Inicialização dos clientes
 sdk = mercadopago.SDK(os.environ['MERCADOPAGO_ACCESS_TOKEN'])
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
@@ -20,13 +19,12 @@ def float_to_decimal(obj):
         return [float_to_decimal(v) for v in obj]
     return obj
 
-def salvar_preferencias_dynamodb(preferencia, sandbox_init_point):
+def salvar_preferencias_dynamodb(preferencia, sandbox_init_point, external_reference):
     try:
-        id_preferencia = str(uuid.uuid4())
         with table.batch_writer() as batch:
             for item in preferencia['items']:
                 item_dynamodb = {
-                    'id_preferencia': id_preferencia,
+                    'external_reference': external_reference,
                     'produto': item['title'],
                     'id_mercadopago': preferencia['id'],
                     'quantidade': item['quantity'],
@@ -37,9 +35,9 @@ def salvar_preferencias_dynamodb(preferencia, sandbox_init_point):
                 }
                 item_dynamodb = float_to_decimal(item_dynamodb)
                 batch.put_item(Item=item_dynamodb)
-        return id_preferencia
+        return external_reference
     except ClientError as e:
-        print(f"Erro detalhado ao salvar no DynamoDB: {str(e)}")
+        print(f"Erro ao salvar no DynamoDB: {str(e)}")
         raise
 
 def criar_preferencia(items, external_reference):
@@ -68,11 +66,7 @@ def criar_preferencia(items, external_reference):
 def lambda_handler(event, context):
     print("Evento recebido:", json.dumps(event))
     try:
-        if 'body' in event:
-            body = json.loads(event['body'])
-        else:
-            body = event
-
+        body = json.loads(event['body']) if 'body' in event else event
         items = body.get('items', [])
 
         if not items:
@@ -92,10 +86,10 @@ def lambda_handler(event, context):
         sandbox_init_point = preferencia.get('sandbox_init_point', 'Não disponível')
         
         print("Preferência criada:", json.dumps(preferencia))
-        print("Tentando salvar no DynamoDB...")
+        print("Salvando no DynamoDB...")
 
-        id_preferencia = salvar_preferencias_dynamodb(preferencia, sandbox_init_point)
-        if not id_preferencia:
+        saved_reference = salvar_preferencias_dynamodb(preferencia, sandbox_init_point, external_reference)
+        if not saved_reference:
             return {
                 'statusCode': 500,
                 'body': json.dumps({"message": "Falha ao salvar preferências no DynamoDB"})
@@ -107,7 +101,6 @@ def lambda_handler(event, context):
             'statusCode': 200,
             'body': json.dumps({
                 "message": "Preferência criada e salva com sucesso",
-                "id_preferencia": id_preferencia,
                 "external_reference": external_reference,
                 "itens": [
                     {
