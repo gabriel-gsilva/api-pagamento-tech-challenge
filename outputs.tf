@@ -1,8 +1,3 @@
-output "dynamodb_table_name" {
-  description = "Nome da tabela DynamoDB criada"
-  value = module.dynamodb.table_name
-}
-
 output "lambda_criar_preferencia_function_name" {
   description = "Nome da função Lambda para criar preferência"
   value       = aws_lambda_function.criar_preferencia.function_name
