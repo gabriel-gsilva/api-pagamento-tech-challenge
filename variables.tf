@@ -4,6 +4,12 @@ variable "aws_region" {
   default     = "sa-east-1"
 }
 
+variable "dynamodb_table_name" {
+  description = "Nome da tabela DynamoDB"
+  type        = string
+  default     = "MercadoPagoPreferencias"
+}
+
 variable "environment" {
   description = "O ambiente de implantação (ex: dev, staging, prod)"
   type        = string
