@@ -10,16 +10,16 @@ variable "environment" {
   default     = "dev"
 }
 
-variable "dynamodb_table_name" {
-  description = "Nome da tabela DynamoDB"
-  type        = string
-  default     = "MercadoPagoPreferencias"
-}
-
 variable "lambda_function_name" {
   description = "Prefixo para o nome das funções Lambda"
   type        = string
   default     = "mercadopago"
+}
+
+variable "dynamodb_table_name" {
+  description = "Nome da tabela DynamoDB"
+  type        = string
+  default     = "MercadoPagoPreferencias"
 }
 
 variable "lambda_runtime" {

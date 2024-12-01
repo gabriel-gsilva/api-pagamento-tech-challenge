@@ -49,6 +49,26 @@ resource "aws_iam_role" "lambda_role" {
   tags = var.tags
 }
 
+# Lambda function para retorno
+resource "aws_lambda_function" "retorno" {
+  filename         = "./src/lambda_retorno.zip"
+  function_name    = "${var.lambda_function_name}_retorno"
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "lambda_retorno.lambda_handler"
+  runtime          = var.lambda_runtime
+  memory_size      = var.lambda_memory_size
+  timeout          = var.lambda_timeout
+  source_code_hash = filebase64sha256("./src/lambda_retorno.zip")
+
+  environment {
+    variables = {
+      DYNAMODB_TABLE = var.dynamodb_table_name
+      REDIRECT_URL   = var.redirect_url
+    }
+  }
+  tags = var.tags
+}
+
 # Lambda function para criar preferência
 resource "aws_lambda_function" "criar_preferencia" {
   filename         = "./src/lambda_criar_preferencia.zip"
@@ -65,26 +85,6 @@ resource "aws_lambda_function" "criar_preferencia" {
       DYNAMODB_TABLE           = var.dynamodb_table_name
       MERCADOPAGO_ACCESS_TOKEN = var.mercadopago_access_token
       API_GATEWAY_URL          = "https://${aws_api_gateway_rest_api.mercadopago_api.id}.execute-api.${var.aws_region}.amazonaws.com/${var.api_gateway_stage_name}"
-    }
-  }
-  tags = var.tags
-}
-
-# Lambda function para retorno
-resource "aws_lambda_function" "retorno" {
-  filename         = "./src/lambda_retorno.zip"
-  function_name    = "${var.lambda_function_name}_retorno"
-  role             = aws_iam_role.lambda_role.arn
-  handler          = "lambda_retorno.lambda_handler"
-  runtime          = var.lambda_runtime
-  memory_size      = var.lambda_memory_size
-  timeout          = var.lambda_timeout
-  source_code_hash = filebase64sha256("./src/lambda_retorno.zip")
-
-  environment {
-    variables = {
-      DYNAMODB_TABLE = var.dynamodb_table_name
-      REDIRECT_URL   = var.redirect_url
     }
   }
   tags = var.tags
