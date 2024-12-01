@@ -2,16 +2,9 @@ provider "aws" {
   region = var.aws_region
 }
 
-# Dynamodb via repositorio segregado
-module "dynamodb" {
-  source = "git::https://github.com/gabriel-gsilva/dynamodb-pagamento-tech-challenge"
-  tags   = var.tags
-}
-
 # IAM Role para as funções Lambda
 resource "aws_iam_role" "lambda_role" {
   name_prefix = "lambda_mercadopago_role_"
-  
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -30,26 +23,26 @@ resource "aws_iam_role" "lambda_role" {
 
 # Política para as funções Lambda necessárias
 resource "aws_iam_role_policy" "lambda_policy" {
-  name   = "lambda_mercadopago_policy"
-  role   = aws_iam_role.lambda_role.id
+  name = "lambda_mercadopago_policy"
+  role = aws_iam_role.lambda_role.id
   
   policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow"
-        Action   = [
+        Effect = "Allow"
+        Action = [
           "dynamodb:PutItem",
           "dynamodb:UpdateItem",
           "dynamodb:BatchWriteItem",
           "dynamodb:GetItem",
           "dynamodb:Query"
         ]
-        Resource = module.dynamodb.table_arn
+        Resource = "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.current.account_id}:table/${var.dynamodb_table_name}"
       },
       {
-        Effect   = "Allow"
-        Action   = [
+        Effect = "Allow"
+        Action = [
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
           "logs:PutLogEvents"
@@ -59,6 +52,9 @@ resource "aws_iam_role_policy" "lambda_policy" {
     ]
   })
 }
+
+# Adicione este data source no início do arquivo
+data "aws_caller_identity" "current" {}
 
 # Lambda function para criar preferência
 resource "aws_lambda_function" "criar_preferencia" {
@@ -76,7 +72,7 @@ resource "aws_lambda_function" "criar_preferencia" {
   
   environment {
     variables = {
-      DYNAMODB_TABLE           = module.dynamodb.table_name
+      DYNAMODB_TABLE           = var.dynamodb_table_name
       MERCADOPAGO_ACCESS_TOKEN = var.mercadopago_access_token
       API_GATEWAY_URL          = "https://${aws_api_gateway_rest_api.mercadopago_api.id}.execute-api.${var.aws_region}.amazonaws.com/${var.api_gateway_stage_name}"
     }
@@ -101,7 +97,7 @@ resource "aws_lambda_function" "retorno" {
   
   environment {
     variables = {
-      DYNAMODB_TABLE     = module.dynamodb.table_name
+      DYNAMODB_TABLE     = var.dynamodb_table_name
       REDIRECT_URL       = var.redirect_url
     }
   }

@@ -4,6 +4,18 @@ variable "aws_region" {
   default     = "sa-east-1"
 }
 
+variable "aws_account_id" {
+  description = "ID da conta AWS"
+  type        = string
+  default     = "180294215177"
+}
+
+variable "dynamodb_table_name" {
+  description = "Nome da tabela DynamoDB"
+  type        = string
+  default     = "MercadoPagoPreferencias"
+}
+
 variable "environment" {
   description = "O ambiente de implantação (ex: dev, staging, prod)"
   type        = string
@@ -15,6 +27,8 @@ variable "lambda_function_name" {
   type        = string
   default     = "mercadopago"
 }
+
+
 
 variable "lambda_runtime" {
   description = "Runtime para as funções Lambda"
