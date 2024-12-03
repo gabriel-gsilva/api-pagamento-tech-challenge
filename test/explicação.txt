@@ -1,0 +1,37 @@
+# Lambda criar preferencia
+
+Este teste unitário está configurado para testar a função lambda_handler do módulo lambda_criar_preferencia. 
+Aqui está uma explicação passo a passo do que o código faz:
+
+1. Importações: 
+Importa módulos necessários, incluindo pytest, unittest.mock, json, os e sys.
+
+2. Variáveis de Ambiente: 
+Define variáveis de ambiente necessárias para o teste, como tokens de acesso e URLs.
+
+3. Adiciona Diretório ao PYTHONPATH: 
+Adiciona o diretório raiz ao PYTHONPATH para garantir que o módulo lambda_criar_preferencia possa ser importado corretamente.
+
+4. Importação do Módulo: 
+Tenta importar o módulo lambda_criar_preferencia. Se não conseguir, imprime uma mensagem de erro e encerra o script.
+
+5. Fixture mock_env_vars: 
+Define uma fixture do pytest que usa monkeypatch para definir variáveis de ambiente durante o teste.
+
+6. Mocks 
+Usa unittest.mock.patch para substituir partes do código:
+- lambda_criar_preferencia.sdk.preference: Mocka a criação de preferências do Mercado Pago.
+- lambda_criar_preferencia.table.batch_writer: Mocka o escritor em lote do DynamoDB.
+
+7. Teste 
+test_lambda_handler_sucesso
+Define um teste que:
+- Mocka a resposta da criação de preferência do Mercado Pago.
+- Mocka o comportamento do escritor em lote do DynamoDB.
+
+O objetivo do teste é verificar se a função lambda_handler do módulo lambda_criar_preferencia 
+funciona corretamente quando a criação de uma preferência no Mercado Pago é bem-sucedida.
+
+
+# Lambda retorno
+
