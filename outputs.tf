@@ -1,16 +1,11 @@
-output "dynamodb_table_name" {
-  description = "Nome da tabela DynamoDB criada"
-  value       = aws_dynamodb_table.preferencias.name
-}
-
 output "lambda_criar_preferencia_function_name" {
   description = "Nome da função Lambda para criar preferência"
   value       = aws_lambda_function.criar_preferencia.function_name
 }
 
-output "lambda_criar_preferencia_invoke_arn" {
-  description = "ARN de invocação da função Lambda para criar preferência"
-  value       = aws_lambda_function.criar_preferencia.invoke_arn
+output "api_gateway_id" {
+  description = "ID do API Gateway"
+  value       = aws_api_gateway_rest_api.mercadopago_api.id
 }
 
 output "lambda_retorno_function_name" {
@@ -18,14 +13,14 @@ output "lambda_retorno_function_name" {
   value       = aws_lambda_function.retorno.function_name
 }
 
+output "lambda_criar_preferencia_invoke_arn" {
+  description = "ARN de invocação da função Lambda para criar preferência"
+  value       = aws_lambda_function.criar_preferencia.invoke_arn
+}
+
 output "lambda_retorno_invoke_arn" {
   description = "ARN de invocação da função Lambda para processar retorno"
   value       = aws_lambda_function.retorno.invoke_arn
-}
-
-output "api_gateway_id" {
-  description = "ID do API Gateway"
-  value       = aws_api_gateway_rest_api.mercadopago_api.id
 }
 
 output "api_gateway_root_resource_id" {
@@ -66,4 +61,12 @@ output "iam_role_name" {
 output "iam_role_arn" {
   description = "ARN da IAM Role criada para as funções Lambda"
   value       = aws_iam_role.lambda_role.arn
+}
+
+output "lambda_function_criar_preferencia_arn" {
+   value       = aws_lambda_function.criar_preferencia.arn 
+}
+
+output "lambda_function_retorno_arn" {
+   value       = aws_lambda_function.retorno.arn 
 }

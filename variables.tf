@@ -1,7 +1,19 @@
 variable "aws_region" {
-  description = "A região da AWS onde os recursos serão criados"
+  description = "Região da AWS onde os recursos serão criados"
   type        = string
-  default     = "us-east-1"
+  default     = "sa-east-1"
+}
+
+variable "aws_account_id" {
+  description = "ID da conta AWS"
+  type        = string
+  default     = "180294215177"
+}
+
+variable "dynamodb_table_name" {
+  description = "Nome da tabela DynamoDB"
+  type        = string
+  default     = "MercadoPagoPreferencias"
 }
 
 variable "environment" {
@@ -10,22 +22,16 @@ variable "environment" {
   default     = "dev"
 }
 
-variable "dynamodb_table_name" {
-  description = "Nome da tabela DynamoDB para armazenar as preferências do Mercado Pago"
+variable "lambda_runtime" {
+  description = "Runtime para as funções Lambda"
   type        = string
-  default     = "MercadoPagoPreferencias"
+  default     = "python3.8"
 }
 
 variable "lambda_function_name" {
   description = "Prefixo para o nome das funções Lambda"
   type        = string
   default     = "mercadopago"
-}
-
-variable "lambda_runtime" {
-  description = "Runtime para as funções Lambda"
-  type        = string
-  default     = "python3.8"
 }
 
 variable "api_gateway_name" {
@@ -71,12 +77,6 @@ variable "api_gateway_stage_name" {
   description = "Nome do estágio do API Gateway"
   type        = string
   default     = "v1"
-}
-
-variable "dynamodb_billing_mode" {
-  description = "Modo de cobrança para a tabela DynamoDB"
-  type        = string
-  default     = "PAY_PER_REQUEST"
 }
 
 variable "lambda_log_retention_in_days" {

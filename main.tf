@@ -2,26 +2,6 @@ provider "aws" {
   region = var.aws_region
 }
 
-# DynamoDB Table
-resource "aws_dynamodb_table" "preferencias" {
-  name           = var.dynamodb_table_name
-  billing_mode   = var.dynamodb_billing_mode
-  hash_key       = "id_preferencia"
-  range_key      = "produto"
-
-  attribute {
-    name = "id_preferencia"
-    type = "S"
-  }
-
-  attribute {
-    name = "produto"
-    type = "S"
-  }
-
-  tags = var.tags
-}
-
 # IAM Role para as funções Lambda
 resource "aws_iam_role" "lambda_role" {
   name_prefix = "lambda_mercadopago_role_"
@@ -29,21 +9,23 @@ resource "aws_iam_role" "lambda_role" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
         Principal = {
           Service = "lambda.amazonaws.com"
         }
       }
     ]
   })
+
   tags = var.tags
 }
 
-# Política para as funções Lambda Necessaria
+# Política para as funções Lambda necessárias
 resource "aws_iam_role_policy" "lambda_policy" {
   name = "lambda_mercadopago_policy"
   role = aws_iam_role.lambda_role.id
+  
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -56,7 +38,7 @@ resource "aws_iam_role_policy" "lambda_policy" {
           "dynamodb:GetItem",
           "dynamodb:Query"
         ]
-        Resource = aws_dynamodb_table.preferencias.arn
+        Resource = "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.current.account_id}:table/${var.dynamodb_table_name}"
       },
       {
         Effect = "Allow"
@@ -65,49 +47,62 @@ resource "aws_iam_role_policy" "lambda_policy" {
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
-        Resource = "arn:aws:logs:*:*:*"
+        Resource = "*"
       }
     ]
   })
 }
 
+# Adicione este data source no início do arquivo
+data "aws_caller_identity" "current" {}
+
 # Lambda function para criar preferência
 resource "aws_lambda_function" "criar_preferencia" {
-  filename         = "../src/lambda_criar_preferencia.zip"
+  filename         = "./src/lambda_criar_preferencia.zip"
   function_name    = "${var.lambda_function_name}_criar_preferencia"
+  
   role             = aws_iam_role.lambda_role.arn
   handler          = "lambda_criar_preferencia.lambda_handler"
+  
   runtime          = var.lambda_runtime
   memory_size      = var.lambda_memory_size
   timeout          = var.lambda_timeout
-  source_code_hash = filebase64sha256("../src/lambda_criar_preferencia.zip")
+  
+  source_code_hash = filebase64sha256("./src/lambda_criar_preferencia.zip")
+  
   environment {
     variables = {
-      DYNAMODB_TABLE           = aws_dynamodb_table.preferencias.name
+      DYNAMODB_TABLE           = var.dynamodb_table_name
       MERCADOPAGO_ACCESS_TOKEN = var.mercadopago_access_token
       API_GATEWAY_URL          = "https://${aws_api_gateway_rest_api.mercadopago_api.id}.execute-api.${var.aws_region}.amazonaws.com/${var.api_gateway_stage_name}"
     }
   }
-  tags = var.tags
+
+  tags               = var.tags
 }
 
 # Lambda function para retorno
 resource "aws_lambda_function" "retorno" {
-  filename         = "../src/lambda_retorno.zip"
+  filename         = "./src/lambda_retorno.zip"
   function_name    = "${var.lambda_function_name}_retorno"
+
   role             = aws_iam_role.lambda_role.arn
   handler          = "lambda_retorno.lambda_handler"
+
   runtime          = var.lambda_runtime
   memory_size      = var.lambda_memory_size
   timeout          = var.lambda_timeout
-  source_code_hash = filebase64sha256("../src/lambda_retorno.zip")
+  
+  source_code_hash = filebase64sha256("./src/lambda_retorno.zip")
+  
   environment {
     variables = {
-      DYNAMODB_TABLE = aws_dynamodb_table.preferencias.name
-      REDIRECT_URL   = var.redirect_url
+      DYNAMODB_TABLE     = var.dynamodb_table_name
+      REDIRECT_URL       = var.redirect_url
     }
   }
-  tags = var.tags
+
+  tags               = var.tags
 }
 
 # API Gateway
@@ -151,14 +146,6 @@ resource "aws_api_gateway_resource" "retorno" {
   path_part   = "retorno"
 }
 
-# Método GET para retorno
-resource "aws_api_gateway_method" "get_retorno" {
-  rest_api_id   = aws_api_gateway_rest_api.mercadopago_api.id
-  resource_id   = aws_api_gateway_resource.retorno.id
-  http_method   = "GET"
-  authorization = "NONE"
-}
-
 # Integração do método GET com a função Lambda de retorno
 resource "aws_api_gateway_integration" "lambda_retorno" {
   rest_api_id = aws_api_gateway_rest_api.mercadopago_api.id
@@ -168,6 +155,14 @@ resource "aws_api_gateway_integration" "lambda_retorno" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.retorno.invoke_arn
+}
+
+# Método GET para retorno
+resource "aws_api_gateway_method" "get_retorno" {
+  rest_api_id   = aws_api_gateway_rest_api.mercadopago_api.id
+  resource_id   = aws_api_gateway_resource.retorno.id
+  http_method   = "GET"
+  authorization = "NONE"
 }
 
 # IAM Role para CloudWatch Logs do API Gateway
