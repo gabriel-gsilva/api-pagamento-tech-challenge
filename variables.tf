@@ -4,16 +4,17 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-variable "environment" {
-  description = "O ambiente de implantação (ex: dev, staging, prod)"
-  type        = string
-  default     = "dev"
-}
-
 variable "aws_account_id" {
   description = "ID da conta AWS"
   type        = string
   default     = "180294215177"
+}
+
+
+variable "environment" {
+  description = "O ambiente de implantação (ex: dev, staging, prod)"
+  type        = string
+  default     = "dev"
 }
 
 variable "dynamodb_table_name" {
