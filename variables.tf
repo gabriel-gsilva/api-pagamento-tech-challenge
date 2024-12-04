@@ -4,6 +4,12 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
+variable "lambda_runtime" {
+  description = "Runtime para as funções Lambda"
+  type        = string
+  default     = "python3.8"
+}
+
 variable "environment" {
   description = "O ambiente de implantação (ex: dev, staging, prod)"
   type        = string
@@ -16,11 +22,6 @@ variable "aws_account_id" {
   default     = "180294215177"
 }
 
-variable "lambda_runtime" {
-  description = "Runtime para as funções Lambda"
-  type        = string
-  default     = "python3.8"
-}
 
 variable "dynamodb_table_name" {
   description = "Nome da tabela DynamoDB"
