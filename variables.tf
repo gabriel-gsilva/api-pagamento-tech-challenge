@@ -10,16 +10,16 @@ variable "aws_account_id" {
   default     = "180294215177"
 }
 
-variable "dynamodb_table_name" {
-  description = "Nome da tabela DynamoDB"
-  type        = string
-  default     = "MercadoPagoPreferencias"
-}
-
 variable "environment" {
   description = "O ambiente de implantação (ex: dev, staging, prod)"
   type        = string
   default     = "dev"
+}
+
+variable "dynamodb_table_name" {
+  description = "Nome da tabela DynamoDB"
+  type        = string
+  default     = "MercadoPagoPreferencias"
 }
 
 variable "lambda_runtime" {
