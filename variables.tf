@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "Região da AWS onde os recursos serão criados"
   type        = string
-  default     = "sa-east-1"
+  default     = "us-east-1"
 }
 
 variable "environment" {
@@ -16,17 +16,16 @@ variable "aws_account_id" {
   default     = "180294215177"
 }
 
+variable "lambda_runtime" {
+  description = "Runtime para as funções Lambda"
+  type        = string
+  default     = "python3.8"
+}
 
 variable "dynamodb_table_name" {
   description = "Nome da tabela DynamoDB"
   type        = string
   default     = "MercadoPagoPreferencias"
-}
-
-variable "lambda_runtime" {
-  description = "Runtime para as funções Lambda"
-  type        = string
-  default     = "python3.8"
 }
 
 variable "lambda_function_name" {
