@@ -3,14 +3,14 @@ output "lambda_criar_preferencia_function_name" {
   value       = aws_lambda_function.criar_preferencia.function_name
 }
 
-output "api_gateway_id" {
-  description = "ID do API Gateway"
-  value       = aws_api_gateway_rest_api.mercadopago_api.id
-}
-
 output "lambda_retorno_function_name" {
   description = "Nome da função Lambda para processar retorno"
   value       = aws_lambda_function.retorno.function_name
+}
+
+output "api_gateway_id" {
+  description = "ID do API Gateway"
+  value       = aws_api_gateway_rest_api.mercadopago_api.id
 }
 
 output "lambda_criar_preferencia_invoke_arn" {
