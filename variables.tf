@@ -4,6 +4,13 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
+variable "aws_account_id" {
+  description = "ID da conta AWS"
+  type        = string
+  default     = "180294215177"
+}
+
+
 variable "lambda_runtime" {
   description = "Runtime para as funções Lambda"
   type        = string
@@ -14,12 +21,6 @@ variable "environment" {
   description = "O ambiente de implantação (ex: dev, staging, prod)"
   type        = string
   default     = "dev"
-}
-
-variable "aws_account_id" {
-  description = "ID da conta AWS"
-  type        = string
-  default     = "180294215177"
 }
 
 
